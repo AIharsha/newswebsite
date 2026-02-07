@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Global Pulse - Breaking News & Trending Stories</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Source+Sans+3:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.1/umd/lucide.min.js"></script>
+</head>
+<body>
+    <!-- Admin Login Modal -->
+    <div id="adminModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Admin Login</h2>
+            <input type="password" id="adminPassword" placeholder="Enter admin password">
+            <button onclick="adminLogin()">Login</button>
+        </div>
+    </div>
+
+    <!-- Admin Panel -->
+    <div id="adminPanel" class="admin-panel hidden">
+        <div class="admin-header">
+            <h2>Admin Dashboard</h2>
+            <button onclick="closeAdmin()">Close</button>
+        </div>
+        
+        <div class="admin-tabs">
+            <button class="tab-btn active" onclick="switchTab('news')">Manage News</button>
+            <button class="tab-btn" onclick="switchTab('affiliate')">Affiliate Products</button>
+            <button class="tab-btn" onclick="switchTab('ads')">Ad Settings</button>
+            <button class="tab-btn" onclick="switchTab('settings')">Settings</button>
+        </div>
+
+        <div id="newsTab" class="tab-content">
+            <h3>Add/Edit News Article</h3>
+            <form id="newsForm">
+                <input type="text" id="newsTitle" placeholder="News Title" required>
+                <select id="newsCategory" required>
+                    <option value="">Select Category</option>
+                    <option value="usa">USA</option>
+                    <option value="india">India</option>
+                    <option value="china">China</option>
+                    <option value="russia">Russia</option>
+                    <option value="europe">Europe</option>
+                    <option value="asia">Asia</option>
+                    <option value="world">World</option>
+                    <option value="tech">Technology</option>
+                    <option value="business">Business</option>
+                    <option value="sports">Sports</option>
+                </select>
+                <input type="text" id="newsImage" placeholder="Image URL">
+                <textarea id="newsContent" placeholder="News Content" rows="6" required></textarea>
+                <input type="text" id="newsSource" placeholder="Source">
+                <button type="submit">Add News</button>
+            </form>
+            
+            <div id="newsList" class="news-list"></div>
+        </div>
+
+        <div id="affiliateTab" class="tab-content hidden">
+            <h3>Add Affiliate Product</h3>
+            <form id="affiliateForm">
+                <input type="text" id="productName" placeholder="Product Name" required>
+                <input type="text" id="productImage" placeholder="Product Image URL">
+                <input type="text" id="productPrice" placeholder="Price (e.g., $99.99)">
+                <input type="text" id="affiliateLink" placeholder="Affiliate Link" required>
+                <textarea id="productDescription" placeholder="Product Description" rows="3"></textarea>
+                <select id="productCategory">
+                    <option value="electronics">Electronics</option>
+                    <option value="fashion">Fashion</option>
+                    <option value="books">Books</option>
+                    <option value="home">Home & Garden</option>
+                    <option value="sports">Sports</option>
+                    <option value="other">Other</option>
+                </select>
+                <button type="submit">Add Product</button>
+            </form>
+            
+            <div id="productList" class="product-list"></div>
+        </div>
+
+        <div id="adsTab" class="tab-content hidden">
+            <h3>Advertisement Settings</h3>
+            <form id="adForm">
+                <label>Google AdSense Code:</label>
+                <textarea id="adsenseCode" placeholder="Paste your AdSense code here" rows="3"></textarea>
+                
+                <label>Header Ad Code:</label>
+                <textarea id="headerAdCode" placeholder="Header advertisement code" rows="3"></textarea>
+                
+                <label>Sidebar Ad Code:</label>
+                <textarea id="sidebarAdCode" placeholder="Sidebar advertisement code" rows="3"></textarea>
+                
+                <label>Article Bottom Ad Code:</label>
+                <textarea id="articleAdCode" placeholder="Article bottom ad code" rows="3"></textarea>
+                
+                <button type="submit">Save Ad Settings</button>
+            </form>
+        </div>
+
+        <div id="settingsTab" class="tab-content hidden">
+            <h3>Website Settings</h3>
+            <form id="settingsForm">
+                <label>Website Title:</label>
+                <input type="text" id="siteTitle" value="Global Pulse">
+                
+                <label>Website Description:</label>
+                <textarea id="siteDescription" rows="2">Breaking news from around the world</textarea>
+                
+                <label>Admin Password:</label>
+                <input type="password" id="newAdminPassword" placeholder="Change admin password">
+                
+                <label>Email for Notifications:</label>
+                <input type="email" id="adminEmail" placeholder="admin@example.com">
+                
+                <label>Google Analytics ID:</label>
+                <input type="text" id="analyticsId" placeholder="G-XXXXXXXXXX">
+                
+                <button type="submit">Save Settings</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="main-header">
+        <div class="top-bar">
+            <div class="container">
+                <div class="date" id="currentDate"></div>
+                <div class="social-links">
+                    <a href="#"><i data-lucide="twitter"></i></a>
+                    <a href="#"><i data-lucide="facebook"></i></a>
+                    <a href="#"><i data-lucide="instagram"></i></a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="header-main">
+            <div class="container">
+                <div class="logo">
+                    <h1>Global Pulse</h1>
+                    <p class="tagline">Breaking News, Real Time</p>
+                </div>
+                
+                <nav class="main-nav">
+                    <button class="nav-toggle" id="navToggle">
+                        <i data-lucide="menu"></i>
+                    </button>
+                    <ul id="navMenu">
+                        <li><a href="#" class="active" data-category="all">Home</a></li>
+                        <li><a href="#" data-category="usa">USA</a></li>
+                        <li><a href="#" data-category="india">India</a></li>
+                        <li><a href="#" data-category="china">China</a></li>
+                        <li><a href="#" data-category="russia">Russia</a></li>
+                        <li><a href="#" data-category="europe">Europe</a></li>
+                        <li><a href="#" data-category="asia">Asia</a></li>
+                        <li><a href="#" data-category="world">World</a></li>
+                        <li><a href="#" data-category="tech">Tech</a></li>
+                        <li><a href="#" data-category="business">Business</a></li>
+                    </ul>
+                </nav>
+                
+                <div class="header-actions">
+                    <button class="search-btn" id="searchBtn">
+                        <i data-lucide="search"></i>
+                    </button>
+                    <button class="admin-btn" id="adminBtn">
+                        <i data-lucide="settings"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="search-bar hidden" id="searchBar">
+            <div class="container">
+                <input type="text" id="searchInput" placeholder="Search news...">
+                <button id="closeSearch"><i data-lucide="x"></i></button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Ad Space - Header -->
+    <div class="ad-container header-ad" id="headerAd">
+        <div class="ad-placeholder">Advertisement</div>
+    </div>
+
+    <!-- Breaking News Ticker -->
+    <div class="breaking-news">
+        <div class="breaking-label">
+            <i data-lucide="zap"></i>
+            BREAKING
+        </div>
+        <div class="ticker-content">
+            <span id="breakingNews">Loading latest breaking news...</span>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <div class="content-grid">
+                <!-- Left Column - Main News -->
+                <div class="news-column">
+                    <section class="featured-story" id="featuredStory">
+                        <!-- Featured story will be loaded here -->
+                    </section>
+
+                    <section class="news-grid" id="newsGrid">
+                        <!-- News articles will be loaded here -->
+                    </section>
+
+                    <!-- Load More Button -->
+                    <div class="load-more">
+                        <button id="loadMoreBtn">Load More Stories</button>
+                    </div>
+                </div>
+
+                <!-- Right Column - Sidebar -->
+                <aside class="sidebar">
+                    <!-- Trending Topics -->
+                    <div class="widget trending-widget">
+                        <h3 class="widget-title">
+                            <i data-lucide="trending-up"></i>
+                            Trending Now
+                        </h3>
+                        <div id="trendingTopics" class="trending-list">
+                            <!-- Trending topics will be loaded here -->
+                        </div>
+                    </div>
+
+                    <!-- Ad Space - Sidebar -->
+                    <div class="ad-container sidebar-ad" id="sidebarAd">
+                        <div class="ad-placeholder">Advertisement</div>
+                    </div>
+
+                    <!-- Affiliate Products -->
+                    <div class="widget products-widget">
+                        <h3 class="widget-title">
+                            <i data-lucide="shopping-bag"></i>
+                            Featured Products
+                        </h3>
+                        <div id="affiliateProducts" class="product-grid">
+                            <!-- Affiliate products will be loaded here -->
+                        </div>
+                    </div>
+
+                    <!-- Newsletter Signup -->
+                    <div class="widget newsletter-widget">
+                        <h3 class="widget-title">
+                            <i data-lucide="mail"></i>
+                            Newsletter
+                        </h3>
+                        <p>Get daily news updates</p>
+                        <form id="newsletterForm">
+                            <input type="email" placeholder="Your email" required>
+                            <button type="submit">Subscribe</button>
+                        </form>
+                    </div>
+
+                    <!-- Categories -->
+                    <div class="widget categories-widget">
+                        <h3 class="widget-title">
+                            <i data-lucide="folder"></i>
+                            Categories
+                        </h3>
+                        <ul class="category-list" id="categoryList">
+                            <!-- Categories will be loaded here -->
+                        </ul>
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h4>About Global Pulse</h4>
+                    <p>Your trusted source for breaking news and in-depth coverage from around the world.</p>
+                    <div class="social-links">
+                        <a href="#"><i data-lucide="twitter"></i></a>
+                        <a href="#"><i data-lucide="facebook"></i></a>
+                        <a href="#"><i data-lucide="instagram"></i></a>
+                        <a href="#"><i data-lucide="youtube"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-col">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Contact</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-col">
+                    <h4>Categories</h4>
+                    <ul>
+                        <li><a href="#">World News</a></li>
+                        <li><a href="#">Technology</a></li>
+                        <li><a href="#">Business</a></li>
+                        <li><a href="#">Sports</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-col">
+                    <h4>Monetization</h4>
+                    <p><strong>Affiliate Disclosure:</strong> This site contains affiliate links. We may earn a commission from purchases made through these links.</p>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2024 Global Pulse. All rights reserved.</p>
+                <p>Powered by passion for journalism</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
